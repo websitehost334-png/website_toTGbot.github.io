@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Telegram Bot Interface</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 500px;
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(to right, #0088cc, #34b7f1);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+        
+        .header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 25px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        input, textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 15px;
+            transition: all 0.3s;
+        }
+        
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #34b7f1;
+            box-shadow: 0 0 0 2px rgba(52, 183, 241, 0.2);
+        }
+        
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        .file-input {
+            padding: 8px 15px;
+            background-color: #f8f9fa;
+            border: 1px dashed #ccc;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .file-input:hover {
+            background-color: #e9ecef;
+        }
+        
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(to right, #0088cc, #34b7f1);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .tab {
+            flex: 1;
+            text-align: center;
+            padding: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            color: #666;
+            transition: all 0.3s;
+            border-bottom: 3px solid transparent;
+        }
+        
+        .tab.active {
+            color: #0088cc;
+            border-bottom: 3px solid #0088cc;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .status {
+            margin-top: 20px;
+            padding: 12px;
+            border-radius: 6px;
+            text-align: center;
+            font-weight: 500;
+            display: none;
+        }
+        
+        .status.success {
+            background-color: #d4edda;
+            color: #155724;
+            display: block;
+        }
+        
+        .status.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            display: block;
+        }
+        
+        .info {
+            background-color: #e7f3ff;
+            border-left: 4px solid #0088cc;
+            padding: 12px 15px;
+            margin-bottom: 20px;
+            border-radius: 0 6px 6px 0;
+            font-size: 14px;
+        }
+        
+        .info p {
+            margin-bottom: 8px;
+        }
+        
+        .info p:last-child {
+            margin-bottom: 0;
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                border-radius: 8px;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Telegram Bot Interface</h1>
+            <p>Send messages, photos, and videos through your Telegram bot</p>
+        </div>
+        
+        <div class="content">
+            <div class="info">
+                <p><strong>How to get your credentials:</strong></p>
+                <p>1. Create a bot with @BotFather to get your bot token</p>
+                <p>2. Start a chat with your bot and send a message</p>
+                <p>3. Visit: https://api.telegram.org/bot&lt;YOUR_BOT_TOKEN&gt;/getUpdates</p>
+                <p>4. Find your chat ID in the response</p>
+            </div>
+            
+            <div class="form-group">
+                <label for="botToken">Bot Token</label>
+                <input type="text" id="botToken" placeholder="Enter your bot token">
+            </div>
+            
+            <div class="form-group">
+                <label for="chatId">Chat ID</label>
+                <input type="text" id="chatId" placeholder="Enter your chat ID">
+            </div>
+            
+            <div class="tabs">
+                <div class="tab active" data-tab="message">Message</div>
+                <div class="tab" data-tab="photo">Photo</div>
+                <div class="tab" data-tab="video">Video</div>
+            </div>
+            
+            <div class="tab-content active" id="message-tab">
+                <div class="form-group">
+                    <label for="message">Message</label>
+                    <textarea id="message" placeholder="Type your message here..."></textarea>
+                </div>
+                <button class="btn" id="sendMessage">Send Message</button>
+            </div>
+            
+            <div class="tab-content" id="photo-tab">
+                <div class="form-group">
+                    <label for="photoCaption">Caption (Optional)</label>
+                    <input type="text" id="photoCaption" placeholder="Add a caption to your photo">
+                </div>
+                <div class="form-group">
+                    <label for="photoFile">Select Photo</label>
+                    <input type="file" id="photoFile" class="file-input" accept="image/*">
+                </div>
+                <button class="btn" id="sendPhoto">Send Photo</button>
+            </div>
+            
+            <div class="tab-content" id="video-tab">
+                <div class="form-group">
+                    <label for="videoCaption">Caption (Optional)</label>
+                    <input type="text" id="videoCaption" placeholder="Add a caption to your video">
+                </div>
+                <div class="form-group">
+                    <label for="videoFile">Select Video</label>
+                    <input type="file" id="videoFile" class="file-input" accept="video/*">
+                </div>
+                <button class="btn" id="sendVideo">Send Video</button>
+            </div>
+            
+            <div class="status" id="status"></div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Tab switching
+            const tabs = document.querySelectorAll('.tab');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const tabId = tab.getAttribute('data-tab');
+                    
+                    // Update active tab
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    
+                    // Show active content
+                    tabContents.forEach(content => {
+                        content.classList.remove('active');
+                        if (content.id === `${tabId}-tab`) {
+                            content.classList.add('active');
+                        }
+                    });
+                });
+            });
+            
+            // Send message function
+            document.getElementById('sendMessage').addEventListener('click', function() {
+                const botToken = document.getElementById('botToken').value;
+                const chatId = document.getElementById('chatId').value;
+                const message = document.getElementById('message').value;
+                
+                if (!botToken || !chatId || !message) {
+                    showStatus('Please fill in all required fields', 'error');
+                    return;
+                }
+                
+                sendToTelegram(botToken, chatId, 'message', { text: message });
+            });
+            
+            // Send photo function
+            document.getElementById('sendPhoto').addEventListener('click', function() {
+                const botToken = document.getElementById('botToken').value;
+                const chatId = document.getElementById('chatId').value;
+                const caption = document.getElementById('photoCaption').value;
+                const fileInput = document.getElementById('photoFile');
+                
+                if (!botToken || !chatId || !fileInput.files.length) {
+                    showStatus('Please fill in all required fields', 'error');
+                    return;
+                }
+                
+                sendToTelegram(botToken, chatId, 'photo', { 
+                    caption: caption,
+                    file: fileInput.files[0]
+                });
+            });
+            
+            // Send video function
+            document.getElementById('sendVideo').addEventListener('click', function() {
+                const botToken = document.getElementById('botToken').value;
+                const chatId = document.getElementById('chatId').value;
+                const caption = document.getElementById('videoCaption').value;
+                const fileInput = document.getElementById('videoFile');
+                
+                if (!botToken || !chatId || !fileInput.files.length) {
+                    showStatus('Please fill in all required fields', 'error');
+                    return;
+                }
+                
+                sendToTelegram(botToken, chatId, 'video', { 
+                    caption: caption,
+                    file: fileInput.files[0]
+                });
+            });
+            
+            // Function to send data to Telegram
+            function sendToTelegram(botToken, chatId, type, data) {
+                const statusElement = document.getElementById('status');
+                statusElement.className = 'status';
+                
+                let url = `https://api.telegram.org/bot${botToken}/`;
+                let formData = new FormData();
+                formData.append('chat_id', chatId);
+                
+                if (type === 'message') {
+                    url += 'sendMessage';
+                    formData.append('text', data.text);
+                } else if (type === 'photo') {
+                    url += 'sendPhoto';
+                    formData.append('photo', data.file);
+                    if (data.caption) {
+                        formData.append('caption', data.caption);
+                    }
+                } else if (type === 'video') {
+                    url += 'sendVideo';
+                    formData.append('video', data.file);
+                    if (data.caption) {
+                        formData.append('caption', data.caption);
+                    }
+                }
+                
+                fetch(url, {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.ok) {
+                        showStatus('Message sent successfully!', 'success');
+                        // Clear form
+                        if (type === 'message') {
+                            document.getElementById('message').value = '';
+                        } else if (type === 'photo') {
+                            document.getElementById('photoFile').value = '';
+                            document.getElementById('photoCaption').value = '';
+                        } else if (type === 'video') {
+                            document.getElementById('videoFile').value = '';
+                            document.getElementById('videoCaption').value = '';
+                        }
+                    } else {
+                        showStatus(`Error: ${data.description}`, 'error');
+                    }
+                })
+                .catch(error => {
+                    showStatus(`Error: ${error.message}`, 'error');
+                });
+            }
+            
+            // Function to show status messages
+            function showStatus(message, type) {
+                const statusElement = document.getElementById('status');
+                statusElement.textContent = message;
+                statusElement.className = `status ${type}`;
+                
+                // Auto hide success messages after 5 seconds
+                if (type === 'success') {
+                    setTimeout(() => {
+                        statusElement.className = 'status';
+                    }, 5000);
+                }
+            }
+        });
+    </script>
+</body>
+</html>
